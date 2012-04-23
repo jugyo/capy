@@ -1,3 +1,4 @@
+require 'readline'
 require "capy/version"
 require "slop"
 require "colored"
@@ -10,8 +11,8 @@ module Capy
     def run(args)
       @opts = Slop.parse!(args, :help => true) do
         banner "capy [script.capy]\n"
-        on :n, :nonstop
         on :b, :browser=, 'chrome, firefox', :default => 'chrome'
+        on :n, :nonstop
       end
       exit if opts.help?
 
@@ -32,10 +33,10 @@ module Capy
     end
 
     def start_shell(evaluater = Evaluater.new)
-      require 'readline'
+      exit_commands = %w(exit quit)
 
       Readline.completion_proc = lambda do |text|
-        (Capybara::DSL.instance_methods + %w(exit quit)).grep(/^#{Regexp.quote(text.strip)}/)
+        (Capybara::DSL.instance_methods + exit_commands).grep(/^#{Regexp.quote(text.strip)}/)
       end
 
       history_file = File.expand_path('~/.capy_history')
@@ -54,7 +55,7 @@ module Capy
         end
 
         case buf.strip
-        when 'exit', 'quit'
+        when *exit_commands
           File.open(history_file, 'w') do |file|
             lines = Readline::HISTORY.to_a[([Readline::HISTORY.size - 1000, 0].max)..-1]
             file.print(lines.join("\n"))
