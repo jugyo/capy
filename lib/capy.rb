@@ -9,7 +9,7 @@ module Capy
 
     def run(args)
       @opts = Slop.parse!(args, :help => true) do
-        banner "capy foo.capy\n"
+        banner "capy [script.capy]\n"
         on :n, :nonstop
       end
       exit if opts.help?
