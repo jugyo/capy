@@ -31,12 +31,11 @@ module Capy
       end
     end
 
-    def start_shell
+    def start_shell(evaluater = Evaluater.new)
       require 'readline'
       Readline.completion_proc = lambda do |text|
         (Capybara::DSL.instance_methods + %w(exit quit)).grep(/^#{Regexp.quote(text.strip)}/)
       end
-      evaluater = Evaluater.new
       puts 'Type `exit` to exit'
       while buf = Readline.readline('> ', true)
         case buf.strip
@@ -54,13 +53,13 @@ module Capy
     end
 
     def eval_script(script_file)
-      Evaluater.new.instance_eval(File.read(script_file), script_file, 1)
+      evaluater = Evaluater.new
+      evaluater.instance_eval(File.read(script_file), script_file, 1)
     rescue => e
       error e
     ensure
       unless opts.nonstop?
-        print 'Press Enter to exit: '.bold
-        gets
+        start_shell(evaluater)
       end
     end
 
