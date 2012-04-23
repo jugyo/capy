@@ -31,7 +31,7 @@ module Capy
     def start_shell
       require 'readline'
       Readline.completion_proc = lambda do |text|
-        (Capybara::DSL.instance_methods + [:exit]).grep /^#{Regexp.quote(text.strip)}/
+        (Capybara::DSL.instance_methods + %w(exit quit)).grep /^#{Regexp.quote(text.strip)}/
       end
       evaluater = Evaluater.new
       puts 'Type `exit` to exit'
