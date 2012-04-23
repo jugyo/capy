@@ -37,7 +37,7 @@ module Capy
       puts 'Type `exit` to exit'
       while buf = Readline.readline('> ', true)
         case buf.strip
-        when 'exit'
+        when 'exit', 'quit'
           exit
         else
           begin
