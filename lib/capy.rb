@@ -33,13 +33,32 @@ module Capy
 
     def start_shell(evaluater = Evaluater.new)
       require 'readline'
+
       Readline.completion_proc = lambda do |text|
         (Capybara::DSL.instance_methods + %w(exit quit)).grep(/^#{Regexp.quote(text.strip)}/)
       end
+
+      history_file = File.expand_path('~/.capy_history')
+      if File.exists?(history_file)
+        File.read(history_file, :encoding => "BINARY").
+          encode!(:invalid => :replace, :undef => :replace).
+          split(/\n/).
+          each { |line| Readline::HISTORY << line }
+      end
+
       puts 'Type `exit` to exit'
+
       while buf = Readline.readline('> ', true)
+        unless Readline::HISTORY.count == 1
+          Readline::HISTORY.pop if buf.empty? || Readline::HISTORY[-1] == Readline::HISTORY[-2]
+        end
+
         case buf.strip
         when 'exit', 'quit'
+          File.open(history_file, 'w') do |file|
+            lines = Readline::HISTORY.to_a[([Readline::HISTORY.size - 1000, 0].max)..-1]
+            file.print(lines.join("\n"))
+          end
           exit
         else
           begin
