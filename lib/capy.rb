@@ -11,10 +11,13 @@ module Capy
       @opts = Slop.parse!(args, :help => true) do
         banner "capy [script.capy]\n"
         on :n, :nonstop
+        on :b, :browser=, 'chrome, firefox', :default => 'chrome'
       end
       exit if opts.help?
 
-      Capybara.register_driver(:selenium) { |app| Capybara::Selenium::Driver.new(app, :browser => :chrome) }
+      Capybara.register_driver :selenium do |app|
+        Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
+      end
       Capybara.current_driver = :selenium
 
       if args.empty?
@@ -31,7 +34,7 @@ module Capy
     def start_shell
       require 'readline'
       Readline.completion_proc = lambda do |text|
-        (Capybara::DSL.instance_methods + %w(exit quit)).grep /^#{Regexp.quote(text.strip)}/
+        (Capybara::DSL.instance_methods + %w(exit quit)).grep(/^#{Regexp.quote(text.strip)}/)
       end
       evaluater = Evaluater.new
       puts 'Type `exit` to exit'
