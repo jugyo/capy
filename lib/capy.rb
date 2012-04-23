@@ -51,9 +51,7 @@ module Capy
     end
 
     def eval_script(script_file)
-      Evaluater.new.instance_eval(<<-SCRIPT, script_file, 1)
-      #{File.read(script_file)}
-      SCRIPT
+      Evaluater.new.instance_eval(File.read(script_file), script_file, 1)
     rescue => e
       error e
     ensure
