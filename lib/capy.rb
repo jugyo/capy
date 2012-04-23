@@ -36,7 +36,7 @@ module Capy
       exit_commands = %w(exit quit)
 
       Readline.completion_proc = lambda do |text|
-        (Capybara::DSL.instance_methods + exit_commands).grep(/^#{Regexp.quote(text.strip)}/)
+        (Evaluater.instance_methods - Object.methods + exit_commands).grep(/^#{Regexp.quote(text.strip)}/)
       end
 
       history_file = File.expand_path('~/.capy_history')
@@ -93,5 +93,9 @@ module Capy
 
   class Evaluater
     include Capybara::DSL
+
+    def host(app_host)
+      Capybara.app_host = app_host
+    end
   end
 end
