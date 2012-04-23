@@ -1,0 +1,5 @@
+#!/usr/bin/env capy
+
+visit 'http://google.com/'
+fill_in 'q', :with => 'ruby'
+page.evaluate_script("document.forms[0].submit()")

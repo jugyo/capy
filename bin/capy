@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require 'capy'
+args = ARGV.dup
+ARGV.clear
+Capy.run(args)
