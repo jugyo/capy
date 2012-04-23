@@ -12,6 +12,7 @@ module Capy
       @opts = Slop.parse!(args, :help => true) do
         banner "capy [script.capy]\n"
         on :b, :browser=, 'chrome, firefox', :default => 'chrome'
+        on :h, :host=, 'app host'
         on :n, :nonstop
       end
       exit if opts.help?
@@ -20,6 +21,8 @@ module Capy
         Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
       end
       Capybara.current_driver = :selenium
+
+      Capybara.app_host = opts[:host] if opts[:host]
 
       if args.empty?
         start_shell
