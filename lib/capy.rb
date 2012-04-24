@@ -3,6 +3,7 @@ require "capy/version"
 require "slop"
 require "colored"
 require 'capybara/dsl'
+require 'capybara-webkit'
 
 module Capy
   class << self
@@ -15,6 +16,7 @@ module Capy
         on :j, :js, 'eval script as javascript with -a option'
         on :a, :'app-host=', 'app host'
         on :s, :'stop', 'stop after eval script'
+        on :w, :webkit, 'use capybara webkit'
       end
       return 1 if opts.help?
 
@@ -23,12 +25,17 @@ module Capy
       Capybara.register_driver :selenium do |app|
         Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
       end
-      Capybara.current_driver = :selenium
+      Capybara.register_driver :webkit do |app|
+        browser = Capybara::Driver::Webkit::Browser.new
+        Capybara::Driver::Webkit.new(app, :browser => browser)
+      end
+      Capybara.current_driver = opts.webkit? ? :webkit : :selenium
       Capybara.app_host = opts[:'app-host']
 
       @mode = opts.js? ? :javascript : :capybara
 
       evaluater = Evaluater.new
+      evaluater.header 'user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.5 Safari/534.55.3'
       evaluater.visit (Capybara.app_host) if Capybara.app_host
 
       if args.empty?
@@ -132,6 +139,12 @@ module Capy
 
     def stop
       Capy.start_shell(self)
+    end
+
+    def header(name, value)
+      if page.driver.respond_to?(:header)
+        page.driver.header name, value
+      end
     end
   end
 end

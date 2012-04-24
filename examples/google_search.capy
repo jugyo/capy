@@ -3,3 +3,4 @@
 visit 'http://google.com/'
 fill_in 'q', :with => 'ruby'
 page.evaluate_script("document.forms[0].submit()")
+puts page.evaluate_script('document.getElementsByName("q")[0].value + "の検索結果: " + document.getElementById("resultStats").textContent')
