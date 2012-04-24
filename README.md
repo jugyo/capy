@@ -31,6 +31,14 @@ Change the browser:
 
     $ capy -b firefox example.capy
 
+Using the webkit:
+
+    $ gem install capybara-webkit
+
+and capy with '-w' option
+
+    $ capy -w example.capy
+
 ### JavaScript Mode
 
     # example.js
