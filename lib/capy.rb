@@ -118,7 +118,7 @@ module Capy
     end
 
     def javascript(script)
-      page.evaluate_script script
+      page.evaluate_script script.sub(/\A#!.*\n/, '')
     end
     alias_method :js, :javascript
 
