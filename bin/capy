@@ -2,4 +2,4 @@
 require 'capy'
 args = ARGV.dup
 ARGV.clear
-Capy.run(args)
+exit Capy.run(args)

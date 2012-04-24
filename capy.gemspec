@@ -18,4 +18,7 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'slop', '~>3.1'
   gem.add_runtime_dependency 'capybara'
   gem.add_runtime_dependency 'colored'
+
+  gem.add_development_dependency "rspec"
+  gem.add_development_dependency "rr"
 end
