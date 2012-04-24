@@ -31,6 +31,19 @@ Change the browser:
 
     $ capy -b firefox example.capy
 
+### JavaScript Mode
+
+    # example.js
+
+    location 'http://www.wikipedia.org/'
+    ...
+
+run capy with '-j' option
+
+    $ capy -j example.js
+
+See also the [examples](https://github.com/jugyo/capy/tree/master/examples).
+
 ## Contributing
 
 1. Fork it
