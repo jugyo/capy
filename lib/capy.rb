@@ -31,14 +31,14 @@ module Capy
       end
     end
 
+    EXIT_COMMANDS = %w(exit quit)
+
     def start_shell(evaluater = Evaluater.new)
       return if @_start_shell
       @_start_shell = true
 
-      exit_commands = %w(exit quit)
-
       Readline.completion_proc = lambda do |text|
-        (Evaluater.instance_methods - Object.methods + exit_commands).grep(/^#{Regexp.quote(text.strip)}/)
+        (Evaluater.instance_methods - Object.methods + EXIT_COMMANDS).grep(/^#{Regexp.quote(text.strip)}/)
       end
 
       history_file = File.expand_path('~/.capy_history')
@@ -49,15 +49,13 @@ module Capy
           each { |line| Readline::HISTORY << line }
       end
 
-      puts 'Type `exit` to exit'
-
       while buf = Readline.readline('> ', true)
         unless Readline::HISTORY.count == 1
           Readline::HISTORY.pop if buf.empty? || Readline::HISTORY[-1] == Readline::HISTORY[-2]
         end
 
         case buf.strip
-        when *exit_commands
+        when *EXIT_COMMANDS
           File.open(history_file, 'w') do |file|
             lines = Readline::HISTORY.to_a[([Readline::HISTORY.size - 1000, 0].max)..-1]
             file.print(lines.join("\n"))
