@@ -15,6 +15,8 @@ module Capy
       end
       exit if opts.help?
 
+      trap('INT') { exit }
+
       Capybara.register_driver :selenium do |app|
         Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
       end
