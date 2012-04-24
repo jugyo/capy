@@ -33,6 +33,9 @@ module Capy
     end
 
     def start_shell(evaluater = Evaluater.new)
+      return if @_start_shell
+      @_start_shell = true
+
       exit_commands = %w(exit quit)
 
       Readline.completion_proc = lambda do |text|
@@ -60,7 +63,7 @@ module Capy
             lines = Readline::HISTORY.to_a[([Readline::HISTORY.size - 1000, 0].max)..-1]
             file.print(lines.join("\n"))
           end
-          exit
+          return
         else
           begin
             result = evaluater.instance_eval(buf)
@@ -70,6 +73,8 @@ module Capy
           end
         end
       end
+
+      @_start_shell = false
     end
 
     def eval_script(script_file)
@@ -96,6 +101,10 @@ module Capy
 
     def host(app_host)
       Capybara.app_host = app_host
+    end
+
+    def stop
+      Capy.start_shell(self)
     end
   end
 end

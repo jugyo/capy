@@ -21,6 +21,7 @@ Write script
     visit 'http://www.wikipedia.org/'
     fill_in 'search', :with => 'ruby'
     click_on '  →  '
+    stop
 
 and
 
