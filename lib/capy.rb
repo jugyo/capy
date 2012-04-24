@@ -12,7 +12,6 @@ module Capy
       @opts = Slop.parse!(args, :help => true) do
         banner "capy [script.capy]\n"
         on :b, :browser=, 'chrome, firefox', :default => 'chrome'
-        on :s, :stop, 'stop after running script and start capy shell'
       end
       exit if opts.help?
 
@@ -82,10 +81,6 @@ module Capy
       evaluater.instance_eval(File.read(script_file), script_file, 1)
     rescue => e
       error e
-    ensure
-      if opts.stop?
-        start_shell(evaluater)
-      end
     end
 
     private
