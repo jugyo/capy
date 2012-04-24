@@ -31,10 +31,6 @@ Change the browser:
 
     $ capy -b firefox example.capy
 
-Run as nonstop mode:
-
-    $ capy -n example.capy
-
 ## Contributing
 
 1. Fork it
