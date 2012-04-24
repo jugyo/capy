@@ -13,7 +13,6 @@ module Capy
         banner "capy [script.capy]\n"
         on :b, :browser=, 'chrome, firefox', :default => 'chrome'
         on :s, :stop, 'stop after running script and start capy shell'
-        on :h, :host=, 'app host'
       end
       exit if opts.help?
 
@@ -21,8 +20,6 @@ module Capy
         Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
       end
       Capybara.current_driver = :selenium
-
-      Capybara.app_host = opts[:host] if opts[:host]
 
       if args.empty?
         start_shell
