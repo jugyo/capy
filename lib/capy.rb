@@ -12,8 +12,11 @@ module Capy
       @opts = Slop.parse!(args, :help => true) do
         banner "capy [script.capy]\n"
         on :b, :browser=, 'chrome, firefox', :default => 'chrome'
+        on :j, :js, 'eval script as javascript with -a option'
+        on :a, :'app-host=', 'app host'
       end
       exit if opts.help?
+      abort @opts.help if opts.js? && opts[:'app-host'].nil?
 
       trap('INT') { exit }
 
@@ -22,13 +25,15 @@ module Capy
       end
       Capybara.current_driver = :selenium
 
+      Capybara.app_host = opts[:host] if opts[:host]
+
       if args.empty?
         start_shell
       else
         args.each do |script_file|
           abort "No such file: #{script_file}".red unless File.exists?(script_file)
           puts "Running: #{script_file} ..."
-          eval_script script_file
+          eval_script script_file, :js => opts.js?
         end
       end
     end
@@ -76,9 +81,16 @@ module Capy
       @_start_shell = false
     end
 
-    def eval_script(script_file)
+    def eval_script(script_file, options)
       evaluater = Evaluater.new
-      evaluater.instance_eval(File.read(script_file), script_file, 1)
+      script = File.read(script_file)
+      if options[:js]
+        evaluater.instance_eval do
+          page.evaluate_script script
+        end
+      else
+        evaluater.instance_eval(script, script_file, 1)
+      end
     rescue => e
       error e
     end
