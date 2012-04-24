@@ -38,7 +38,8 @@ module Capy
             return 1
           end
           puts "Running: #{script_file} ..."
-          evaluater.eval_script File.read(script_file), mode
+          result = evaluater.eval_script File.read(script_file), mode
+          puts "=> #{result.inspect}".cyan
           start_shell evaluater if opts.stop?
         end
       end
