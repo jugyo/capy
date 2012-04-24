@@ -3,7 +3,6 @@ require "capy/version"
 require "slop"
 require "colored"
 require 'capybara/dsl'
-require 'capybara-webkit'
 
 module Capy
   class << self
@@ -22,21 +21,13 @@ module Capy
 
       trap('INT') { exit }
 
-      Capybara.register_driver :selenium do |app|
-        Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
-      end
-      Capybara.register_driver :webkit do |app|
-        browser = Capybara::Driver::Webkit::Browser.new
-        Capybara::Driver::Webkit.new(app, :browser => browser)
-      end
-      Capybara.current_driver = opts.webkit? ? :webkit : :selenium
-      Capybara.app_host = opts[:'app-host']
+      setup_capybara
 
       @mode = opts.js? ? :javascript : :capybara
 
       evaluater = Evaluater.new
-      evaluater.header 'user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.5 Safari/534.55.3'
-      evaluater.visit (Capybara.app_host) if Capybara.app_host
+
+      evaluater.visit Capybara.app_host if Capybara.app_host
 
       if args.empty?
         start_shell evaluater
@@ -59,6 +50,22 @@ module Capy
     rescue => e
       error e
       1
+    end
+
+    def setup_capybara
+      if opts.webkit?
+        require 'capybara-webkit'
+        Capybara.register_driver :webkit do |app|
+          Capybara::Driver::Webkit.new(app, :browser => Capybara::Driver::Webkit::Browser.new)
+        end
+        Capybara.current_driver = :webkit
+      else
+        Capybara.register_driver :selenium do |app|
+          Capybara::Selenium::Driver.new(app, :browser => opts[:browser].to_sym)
+        end
+        Capybara.current_driver = :selenium
+      end
+      Capybara.app_host = opts[:'app-host']
     end
 
     EXIT_COMMANDS = %w(exit quit)
@@ -115,6 +122,15 @@ module Capy
   class Evaluater
     include Capybara::DSL
 
+    def initialize
+      if page.driver.respond_to?(:header)
+        page.driver.header(
+          'user-agent',
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/534.55.3 (KHTML, like Gecko) Version/5.1.5 Safari/534.55.3'
+        )
+      end
+    end
+
     def eval_script(script, mode)
       case mode
       when :javascript
@@ -139,12 +155,6 @@ module Capy
 
     def stop
       Capy.start_shell(self)
-    end
-
-    def header(name, value)
-      if page.driver.respond_to?(:header)
-        page.driver.header name, value
-      end
     end
   end
 end
