@@ -152,7 +152,12 @@ module Capy
 
     def save_screenshot(png_path = nil)
       png_path = gen_uniq_file_name('png') unless png_path
-      browser.save_screenshot(png_path)
+      case Capybara.current_driver
+      when :webkit
+        driver.render(png_path)
+      else
+        browser.save_screenshot(png_path)
+      end
     end
 
     def driver
