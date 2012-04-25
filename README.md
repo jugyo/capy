@@ -41,7 +41,7 @@ and capy with '-w' option
 
 ### To access the elements within iframe
 
-    iframe('IFRAME_ID') do
+    within_frame('IFRAME_ID') do
       click_on 'link'
     end
 
