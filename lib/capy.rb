@@ -151,7 +151,7 @@ module Capy
     end
 
     def save_screenshot(png_path = nil)
-      png_path = gen_uniq_file_name('png') unless png_path
+      png_path = gen_uniq_file_name('Screen Shot', 'png') unless png_path
       case Capybara.current_driver
       when :webkit
         driver.render(png_path)
@@ -178,8 +178,8 @@ module Capy
 
     private
 
-    def gen_uniq_file_name(extension)
-      file_name = Time.now.to_s
+    def gen_uniq_file_name(prefix, extension)
+      file_name = "#{prefix} #{Time.now}"
       i = 2
       while File.exists?("#{file_name}.#{extension}")
         file_name = if file_name =~ /\(\d+\)$/

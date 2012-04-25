@@ -102,15 +102,15 @@ describe Capy do
 
     context 'when file does not exists' do
       it do
-        evaluater.send(:gen_uniq_file_name, :png).should == "#{now}.png"
+        evaluater.send(:gen_uniq_file_name, 'Foo', :png).should == "Foo #{now}.png"
       end
     end
 
     context 'when file already exists' do
       it do
-        mock(File).exists?("#{now}.png") { true }
-        mock(File).exists?("#{now} (2).png") { false }
-        evaluater.send(:gen_uniq_file_name, :png).should == "#{now} (2).png"
+        mock(File).exists?("Foo #{now}.png") { true }
+        mock(File).exists?("Foo #{now} (2).png") { false }
+        evaluater.send(:gen_uniq_file_name, 'Foo', :png).should == "Foo #{now} (2).png"
       end
     end
   end
