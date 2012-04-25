@@ -39,7 +39,7 @@ and capy with '-w' option
 
     $ capy -w example.capy
 
-### To access the elements within iframe
+### To access the elements within IFrame
 
     within_frame('IFRAME_ID') do
       click_on 'link'
