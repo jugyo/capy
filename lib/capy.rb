@@ -150,6 +150,11 @@ module Capy
       instance_eval script
     end
 
+    def save_screenshot(png_path = nil)
+      png_path = gen_uniq_file_name('png') unless png_path
+      browser.save_screenshot(png_path)
+    end
+
     def driver
       page.driver
     end
@@ -164,6 +169,22 @@ module Capy
 
     def stop
       Capy.start_shell(self)
+    end
+
+    private
+
+    def gen_uniq_file_name(extension)
+      file_name = Time.now.to_s
+      i = 2
+      while File.exists?("#{file_name}.#{extension}")
+        file_name = if file_name =~ /\(\d+\)$/
+            file_name.sub(/\(\d+\)$/, i.to_s)
+          else
+            file_name + " (#{i})"
+          end
+        i += 1
+      end
+      "#{file_name}.#{extension}"
     end
   end
 end

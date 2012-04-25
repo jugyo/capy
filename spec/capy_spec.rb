@@ -91,4 +91,27 @@ describe Capy do
       end
     end
   end
+
+  describe 'gen_uniq_file_name' do
+    let!(:evaluater) { Capy::Evaluater.new }
+    let!(:now) { Time.now }
+
+    before do
+      stub(Time).now { now }
+    end
+
+    context 'when file does not exists' do
+      it do
+        evaluater.send(:gen_uniq_file_name, :png).should == "#{now}.png"
+      end
+    end
+
+    context 'when file already exists' do
+      it do
+        mock(File).exists?("#{now}.png") { true }
+        mock(File).exists?("#{now} (2).png") { false }
+        evaluater.send(:gen_uniq_file_name, :png).should == "#{now} (2).png"
+      end
+    end
+  end
 end
