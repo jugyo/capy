@@ -39,6 +39,12 @@ and capy with '-w' option
 
     $ capy -w example.capy
 
+### To access the elements within iframe
+
+    iframe('IFRAME_ID') do
+      click_on 'link'
+    end
+
 ### JavaScript Mode
 
     # example.js
