@@ -45,6 +45,14 @@ and capy with '-w' option
       click_on 'link'
     end
 
+### Take Screenshot
+
+    save_screenshot
+
+or
+
+    save_screenshot 'foo.png'
+
 ### JavaScript Mode
 
     # example.js
