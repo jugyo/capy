@@ -47,11 +47,11 @@ and capy with '-w' option
 
 ### Take Screenshot
 
-    save_screenshot
+    take_screenshot
 
 or
 
-    save_screenshot 'foo.png'
+    take_screenshot 'foo.png'
 
 ### JavaScript Mode
 

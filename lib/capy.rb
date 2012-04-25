@@ -150,7 +150,7 @@ module Capy
       instance_eval script
     end
 
-    def save_screenshot(png_path = nil)
+    def take_screenshot(png_path = nil)
       png_path = gen_uniq_file_name('Screen Shot', 'png') unless png_path
       case Capybara.current_driver
       when :webkit
