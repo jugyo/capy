@@ -1,0 +1,7 @@
+visit 'http://twitter.com/'
+fill_in 'session[username_or_email]', :with => USERNAME
+fill_in 'session[password]', :with => PASSWORD
+click_on 'Sign in'
+browser.keyboard.send_keys('n')
+browser.keyboard.send_keys('Tweet from capy!')
+click_on 'Tweet'
