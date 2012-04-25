@@ -150,6 +150,24 @@ module Capy
       instance_eval script
     end
 
+    def iframe(id)
+      raise 'no block given' unless block_given?
+      browser.switch_to.frame(id)
+      begin
+        yield
+      ensure
+        browser.switch_to.default_content
+      end
+    end
+
+    def driver
+      page.driver
+    end
+
+    def browser
+      driver.browser
+    end
+
     def host(app_host)
       Capybara.app_host = app_host
     end
