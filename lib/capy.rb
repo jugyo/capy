@@ -103,7 +103,7 @@ module Capy
           begin
             result = evaluater.eval_script(buf, mode)
             puts "=> #{result.inspect}".cyan
-          rescue => e
+          rescue Exception => e
             error e
           end
         end
