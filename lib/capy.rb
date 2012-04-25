@@ -158,6 +158,7 @@ module Capy
       else
         browser.save_screenshot(png_path)
       end
+      png_path
     end
 
     def driver
