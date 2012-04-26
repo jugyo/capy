@@ -24,8 +24,8 @@ describe Capy do
 
   context '$ capy -a http://google.com/' do
     it 'visit http://google.com/' do
-      any_instance_of(Capy::Evaluater) do |evaluater|
-        mock(evaluater).visit('http://google.com/')
+      any_instance_of(Capy::Evaluator) do |evaluator|
+        mock(evaluator).visit('http://google.com/')
       end
       mock(Capy).start_shell.with_any_args
       Capy.run(%w(-a http://google.com/)).should == 0
@@ -37,8 +37,8 @@ describe Capy do
       it 'eval script' do
         file = File.expand_path('../fixtures/foo.capy', __FILE__)
         script = File.read(file)
-        any_instance_of(Capy::Evaluater) do |evaluater|
-          mock(evaluater).eval_script(script, :capybara)
+        any_instance_of(Capy::Evaluator) do |evaluator|
+          mock(evaluator).eval_script(script, :capybara)
         end
         Capy.run([file]).should == 0
       end
@@ -46,8 +46,8 @@ describe Capy do
 
     context 'file is not exists' do
       it 'does not eval script' do
-        any_instance_of(Capy::Evaluater) do |evaluater|
-          mock(evaluater).eval_script.with_any_args.never
+        any_instance_of(Capy::Evaluator) do |evaluator|
+          mock(evaluator).eval_script.with_any_args.never
         end
         Capy.run(%w(bar.capy)).should == 1
       end
@@ -57,8 +57,8 @@ describe Capy do
   context '$ capy foo.capy' do
     it 'eval script and stop' do
       file = File.expand_path('../fixtures/foo.capy', __FILE__)
-      any_instance_of(Capy::Evaluater) do |evaluater|
-        mock(evaluater).eval_script.with_any_args
+      any_instance_of(Capy::Evaluator) do |evaluator|
+        mock(evaluator).eval_script.with_any_args
       end
       mock(Capy).start_shell.with_any_args
       Capy.run(['-s', file]).should == 0
@@ -77,8 +77,8 @@ describe Capy do
       it 'eval script' do
         file = File.expand_path('../fixtures/foo.js', __FILE__)
         script = File.read(file)
-        any_instance_of(Capy::Evaluater) do |evaluater|
-          mock(evaluater).eval_script(script, :javascript)
+        any_instance_of(Capy::Evaluator) do |evaluator|
+          mock(evaluator).eval_script(script, :javascript)
         end
         Capy.run(['-j', file]).should == 0
       end
@@ -93,7 +93,7 @@ describe Capy do
   end
 
   describe 'gen_uniq_file_name' do
-    let!(:evaluater) { Capy::Evaluater.new }
+    let!(:evaluator) { Capy::Evaluator.new }
     let!(:now) { Time.now }
 
     before do
@@ -102,7 +102,7 @@ describe Capy do
 
     context 'when file does not exists' do
       it do
-        evaluater.send(:gen_uniq_file_name, 'Foo', :png).should == "Foo #{now}.png"
+        evaluator.send(:gen_uniq_file_name, 'Foo', :png).should == "Foo #{now}.png"
       end
     end
 
@@ -110,7 +110,7 @@ describe Capy do
       it do
         mock(File).exists?("Foo #{now}.png") { true }
         mock(File).exists?("Foo #{now} (2).png") { false }
-        evaluater.send(:gen_uniq_file_name, 'Foo', :png).should == "Foo #{now} (2).png"
+        evaluator.send(:gen_uniq_file_name, 'Foo', :png).should == "Foo #{now} (2).png"
       end
     end
   end

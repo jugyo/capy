@@ -25,12 +25,12 @@ module Capy
 
       @mode = opts.js? ? :javascript : :capybara
 
-      evaluater = Evaluater.new
+      evaluator = Evaluator.new
 
-      evaluater.visit Capybara.app_host if Capybara.app_host
+      evaluator.visit Capybara.app_host if Capybara.app_host
 
       if args.empty?
-        start_shell evaluater
+        start_shell evaluator
       else
         args.each do |script_file|
           unless File.exists?(script_file)
@@ -38,9 +38,9 @@ module Capy
             return 1
           end
           puts "Running: #{script_file} ..."
-          result = evaluater.eval_script File.read(script_file), mode
+          result = evaluator.eval_script File.read(script_file), mode
           puts "=> #{result.inspect}".cyan
-          start_shell evaluater if opts.stop?
+          start_shell evaluator if opts.stop?
         end
       end
 
@@ -71,12 +71,12 @@ module Capy
 
     EXIT_COMMANDS = %w(exit quit)
 
-    def start_shell(evaluater)
+    def start_shell(evaluator)
       return if @_start_shell
       @_start_shell = true
 
       Readline.completion_proc = lambda do |text|
-        (Evaluater.instance_methods - Object.methods + EXIT_COMMANDS).grep(/^#{Regexp.quote(text.strip)}/)
+        (Evaluator.instance_methods - Object.methods + EXIT_COMMANDS).grep(/^#{Regexp.quote(text.strip)}/)
       end
 
       history_file = File.expand_path('~/.capy_history')
@@ -101,7 +101,7 @@ module Capy
           return
         else
           begin
-            result = evaluater.eval_script(buf, mode)
+            result = evaluator.eval_script(buf, mode)
             puts "=> #{result.inspect}".cyan
           rescue Exception => e
             error e
@@ -120,7 +120,7 @@ module Capy
     end
   end
 
-  class Evaluater
+  class Evaluator
     include Capybara::DSL
 
     def initialize
