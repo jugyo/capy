@@ -38,7 +38,7 @@ describe Capy do
         file = File.expand_path('../fixtures/foo.capy', __FILE__)
         script = File.read(file)
         any_instance_of(Capy::Evaluator) do |evaluator|
-          mock(evaluator).eval_script(script, :capybara)
+          mock(evaluator).eval_script(script, :capybara, file)
         end
         Capy.run([file]).should == 0
       end
@@ -78,7 +78,7 @@ describe Capy do
         file = File.expand_path('../fixtures/foo.js', __FILE__)
         script = File.read(file)
         any_instance_of(Capy::Evaluator) do |evaluator|
-          mock(evaluator).eval_script(script, :javascript)
+          mock(evaluator).eval_script(script, :javascript, file)
         end
         Capy.run(['-j', file]).should == 0
       end

@@ -12,12 +12,32 @@ class Evaluator
     end
   end
 
-  def eval_script(script, mode)
+  def eval_script(script, mode, file_path = nil)
+    prev_file, @current_file = @current_file, file_path if file_path
+    prev_mode, @current_mode = @current_mode, mode
+
     case mode
     when :javascript
       javascript script
     else
       capybara script
+    end
+  ensure
+    @current_file = prev_file if file_path
+    @current_mode = prev_mode
+  end
+
+  def import(file_name)
+    script_file = if @current_file
+        File.join(File.dirname(@current_file), file_name)
+      else
+        file_name
+      end
+
+    if File.exists?(script_file)
+      eval_script(File.read(script_file), @current_mode, script_file)
+    else
+      raise "No such file: #{script_file}"
     end
   end
 

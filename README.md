@@ -39,6 +39,10 @@ and capy with '-w' option
 
     $ capy -w example.capy
 
+### Import other files
+
+    import 'examples/google_search.capy'
+
 ### To access the elements within IFrame
 
     within_frame('IFRAME_ID') do
