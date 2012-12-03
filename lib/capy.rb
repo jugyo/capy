@@ -33,16 +33,14 @@ module Capy
       if args.empty?
         start_shell evaluator
       else
-        args.each do |script_file|
-          unless File.exists?(script_file)
-            puts "No such file: #{script_file}".red
-            return 1
-          end
-          puts "Running: #{script_file} ..."
-          result = evaluator.eval_script File.read(script_file), mode, script_file
-          puts "=> #{result.inspect}".cyan
-          start_shell evaluator if opts.stop?
+        script_file = args.shift
+        unless File.exists?(script_file)
+          puts "No such file: #{script_file}".red
+          return 1
         end
+        result = evaluator.eval_script File.read(script_file), mode, script_file
+        puts "=> #{result.inspect}".cyan
+        start_shell evaluator if opts.stop?
       end
 
       0
