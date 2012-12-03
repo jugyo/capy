@@ -1,5 +1,3 @@
 #!/usr/bin/env ruby
 require 'capy'
-args = ARGV.dup
-ARGV.clear
-exit Capy.run(args)
+exit Capy.run(ARGV)
